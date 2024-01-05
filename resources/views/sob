@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MathQuest</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url('/css/style.css') }}">
+</head>
+
+<body>
+    <!-- Start of sidebar -->
+    <div class="container-dashboard">
+        <div class="sidebar">
+            <img src="{{ url('/photos/logoImage.png') }}" alt="Logo">
+            <div class="db-image">
+                <img src="{{ url('/photos/dashboard.png') }}" alt="Dashboard Image">
+            </div>
+            <div class="game-image">
+                <img src="{{ url('/photos/game.png') }}" alt="Game Image">
+            </div>
+            <ul>
+                <h1>MathQuest</h1>
+                <li><a href='dashboard'>Dashboard</a></li>
+                <li><a href='#'>Games</a></li>
+                <li><a href="{{ route('logout') }}">Logout</a></li>
+            </ul>
+        </div>
+        <!-- End of sidebar -->
+
+        <span style="font-size:40px;cursor:pointer" onclick="openNav()">&#9776;</span>
+
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#">Dashboard</a>
+            <a href="#">Game</a>
+            
+        </div>
+
+        <!-- Start of search bar -->
+        <div class="search-bar">
+            <form action="">
+                <input type="text" placeholder="Search" name="search">
+                <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
+        </div>
+        <!-- End of search bar -->
+
+        <!-- Start messages, notification, and profile -->
+        <div class="message">
+            <p class="msg-btn"><i class="fa fa-solid fa-envelope fa-2x"></i></p>
+            <p class="nt-btn"><i class="fa fa-solid fa-bell fa-2x"></i></p>
+            <h1>Juan Dela Cruz</h1>
+        </div>
+        <!-- End messages and notification -->
+
+
+
+
+        
+        <!-- Start header -->
+        <div class="hdr">
+            <h3>Hello, Juan</h3>
+            <p>Ready to start your day?</p>
+        </div>
+        <div class="ratbackg">
+            <img src="{{ url('/photos/ratteach.png') }}" alt="Header" width="300px" height="300px">
+        </div>
+
+
+
+        <div class="add-btn">
+            <button type="button" id="myBtn"><i class="fa-solid fa-circle-plus fa-spin fa-spin-reverse"></i>Add Class</button>
+
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+                <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form action="{{ route('teacher_dashboard.store') }}" method="POST">
+                        @csrf
+                        <div>
+                            <div>
+                                <label>Input Class Name</label>
+                                <input type="text" name="className" placeholder="name">
+                            </div>
+                        </div>
+
+                        <div>
+                            <div>
+                                <button type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+                // JavaScript code for modal functionality
+                // Get the modal
+            var modal = document.getElementById("myModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("myBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+        modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+        modal.style.display = "none";
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+        }
+        // ...
+    </script>
+
+</body>
+</html>
+
+
+
+<div class="act-btn" role="group" aria-label="Basic example">
+    <a class="info-btn" href="{{ route('pupils_registration.show', $rs->id) }}" type="button"
+        class="btn btn-secondary">Detail</a>
+    <a class="edit-btn" href="{{ route('pupils_registration.edit', $rs->id)}}" type="button"
+        class="btn btn-warning">Edit</a>
+    <form action="{{ route('pupils_registration.destroy', $rs->id) }}" method="POST"
+        type="button" class="btn btn-danger p-0" onsubmit="return confirm('Delete?')">
+        @csrf
+        @method('DELETE')
+        <button class="delete-btn btn btn-danger m-0">Delete</button>
+    </form>
+</div>
+
+
+
+
+
+@foreach($getRecord as $value)
+        <tbody>  
+            <tr>
+                <td>{{ $value->id }}</td>
+                <td>{{ $value->class_name }}</td>
+                <td>{{ $value->teacher_name }}</td>
+                <td>{{ $value->status }}</td>
+            </tr>
+        </tbody>    
+          @endforeach
+    </div>
+
+    <div class="display-classes">
+    @if($getRecord->count() > 0)
+                @foreach($getRecord as $rs)
+        <ul>
+            <a href="{{ route('add_class.show', $rs->id) }}"><li> {{ $rs->name }}, {{ $rs->created_by_name }},  
+                @if($rs->status == 0)
+                  Active
+                @else
+                  Inactive
+                @endif
+
+                <form action="{{ route('create_class.delete', $rs->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit">Delete</button>
+            </form>
+             </li> </a>
+        </ul>
+
+        @endforeach
+                @else
+                
+                    <p class="text-center" colspan="5">No Class added</p>
+                
+                @endif
+    </div>
+
+
+
+
+    
+    @if($getRecord->count() > 0)
+                @foreach($getRecord as $rs)
+            <a href="{{ route('add_class.show', $rs->id) }}"><li> {{ $rs->name }}, {{ $rs->created_by_name }},  
+                @if($rs->status == 0)
+                  Active
+                @else
+                  Inactive
+                @endif
+
+                <form action="{{ route('create_class.delete', $rs->id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit">Delete</button>
+            </form>
+             </li> </a>
+        </ul>
+
+        @endforeach
+                @else
+                
+                    <p class="text-center" colspan="5">No Class added</p>
+                
+                @endif
